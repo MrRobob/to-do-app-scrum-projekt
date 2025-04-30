@@ -1,15 +1,38 @@
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { render, screen, fireEvent, waitFor} from "@testing-library/react";
+import { test, expect } from "vitest";
 import App from "../src/App";
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 import React from "react";
 
-describe("Prüft die Anwesentheit des Eingabefelds", () => {
-  it("zeigt das Eingabefeld mit dem Platzhalter 'Neue Kategorie...'", () => {
-    render(<App />);
+test("erstellt eine neue Kategorie", async () => {
+  // App rendern
+  render(<App />);
 
-    // Suche das Eingabefeld mit dem spezifischen Platzhalter
-    const inputField = screen.getByPlaceholderText("Neue Kategorie...");
-    expect(inputField).toBeInTheDocument();
+  // Finde das Eingabefeld und den Button
+  const inputElement = screen.getByPlaceholderText("Neue Kategorie...");
+  const buttonElement = screen.getByRole("button", { name: /Kategorie hinzufügen/i });
+
+  // Simuliere die Eingabe einer neuen Kategorie
+  fireEvent.change(inputElement, { target: { value: "Meine neue Kategorie" } });
+
+  // Simuliere einen Klick auf den Button
+  fireEvent.click(buttonElement);
+
+  // Debugge die DOM-Struktur nach dem Klick
+  screen.debug();
+
+  // Warte auf das DOM-Update und prüfe, ob die neue Kategorie erscheint
+  await waitFor(() => {
+    expect(screen.getByRole("button", { name: /Meine neue Kategorie/i })).toBeInTheDocument();
   });
+});
+
+test("Löscht die Kategorie", async () => {
+  // App rendern
+  render(<App />);
+
+  // Finde das Eingabefeld und den Button
+  const deleteButtonElement = await screen.findByText("🗑️");
+  fireEvent.click(deleteButtonElement);
+  expect(deleteButtonElement).not.toBeInTheDocument();
 });
