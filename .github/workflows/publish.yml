@@ -20,14 +20,14 @@ jobs:
         id: meta_frontend
         uses: docker/metadata-action@v5
         with:
-          images: docker.io/${{ secrets.DOCKER_USERNAME }}/frontend
+          images: docker.io/${{ secrets.DOCKER_USERNAME }}/todoapp-frontend
           tags: type=sha
 
       - name: Docker meta (Backend)
         id: meta_backend
         uses: docker/metadata-action@v5
         with:
-          images: docker.io/${{ secrets.DOCKER_USERNAME }}/backend
+          images: docker.io/${{ secrets.DOCKER_USERNAME }}/todoapp-backend
           tags: type=sha
 
       # Anmeldung bei Docker Hub
